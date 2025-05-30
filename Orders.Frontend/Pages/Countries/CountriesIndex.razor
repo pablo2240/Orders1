@@ -1,4 +1,5 @@
-@page "/countries"
+﻿@page "/countries"
+
 <h3>Paises</h3>
 
 <div class="mb-3">
@@ -31,13 +32,3 @@
         </table>
     </Body>
 </GenericList>
-
-@code {
-    public List<Country>? Countries { get; set; }
-
-    protected async override Task OnInitializedAsync()
-    {
-        var responseHppt = await repository.GetAsync<List<Country>>("api/countries");
-        Countries = responseHppt.Response!;
-    }
-}
