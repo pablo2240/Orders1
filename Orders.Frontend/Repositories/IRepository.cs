@@ -1,4 +1,6 @@
-﻿namespace Orders.Frontend.Repositories
+﻿using System.Runtime.CompilerServices;
+
+namespace Orders.Frontend.Repositories
 {
     public interface IRepository
     {
@@ -8,5 +10,12 @@
         Task<HttpResponseWrapper<object>> PostAsync<T>(string url, T model);
 
         Task<HttpResponseWrapper<TActionResponse>> PostAsync<T, TActionResponse>(string url, T model);
+
+        Task<HttpResponseWrapper<object>> PutAsync<T>(string url, T model);
+
+        Task<HttpResponseWrapper<TActionResponse>> PutAsync<T, TActionResponse>(string url, T model);
+
+        Task<HttpResponseWrapper<object>> DeleteAsync(string url);
+
     }
 }
