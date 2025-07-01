@@ -2,30 +2,29 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Routing;
-using Orders.Shared.Entites;
+using Orders.Shared.Interfaces;
 
-
-namespace Orders.Frontend.Pages.Countries
+namespace Orders.Frontend.Shared
 {
-    public partial class CountryForm
+    public partial class FormWithName<TModel> : ComponentBase where TModel : IEntityWithName //cambio de TModel a IEntityWithName para que funcione con cualquier entidad que implemente esa interfaz
     {
         private EditContext editContext = null!;
 
-        protected override void OnInitialized()
-        {
-            editContext = new(Country);
-        }
-
-        [EditorRequired, Parameter] public Country Country { get; set; } = null!;
+        [EditorRequired, Parameter] public TModel Model { get; set; } = default!;
+        [EditorRequired, Parameter] public string Label { get; set; } = null!;
         [EditorRequired, Parameter] public EventCallback OnValidSubmit { get; set; }
         [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
-        [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
-        public bool FormPostedSuccessfully { get; set; } = false;
+        [Inject] public SweetAlertService SweetAlertService { get; set; } = null!;
+        public bool FormPostedSuccessfully { get; set; }
+
+        protected override void OnInitialized()
+        {
+            editContext = new(Model!);
+        }
 
         private async Task OnBeforeInternalNavigation(LocationChangingContext context)
         {
             var formWasEdited = editContext.IsModified();
-
             if (!formWasEdited || FormPostedSuccessfully)
             {
                 return;
@@ -35,10 +34,9 @@ namespace Orders.Frontend.Pages.Countries
             {
                 Title = "Confirmación",
                 Text = "¿Deseas abandonar la página y perder los cambios?",
-                Icon = SweetAlertIcon.Warning,
-                ShowCancelButton = true
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true,
             });
-
             var confirm = !string.IsNullOrEmpty(result.Value);
             if (confirm)
             {
